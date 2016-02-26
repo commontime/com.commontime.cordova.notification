@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="com.commontime.cordova.notification"
+        version="1.0.0">
+
+    <name>Notification</name>
+    <description>The plugin supports scheduling local and push notifications in various ways with a single interface. It also allows you to update, clear or cancel them. There are different interfaces to query for notifications and a complete set of events to hook into the life cycle of notifications.</description>
+    <author>Commontime Ltd</author>
+    <keywords>notification, local notification, push notification</keywords>
+    <license>Apache 2.0 License</license>
+
+    <!-- cordova -->
+    <engines>
+        <engine name="cordova" version=">=3.6.0" />
+    </engines>
+
+    <!-- dependencies -->
+    <dependency id="cordova-plugin-device" />
+
+    <!-- js -->
+    <js-module src="www/notification.js" name="Notification">
+        <clobbers target="cordova.plugins.notification" />
+        <clobbers target="plugin.notification" />
+    </js-module>
+
+    <js-module src="www/notification-core.js" name="Notification.Core">
+        <clobbers target="cordova.plugins.notification.core" />
+        <clobbers target="plugin.notification.core" />
+    </js-module>
+
+    <js-module src="www/notification-util.js" name="Notification.Util">
+        <merges target="cordova.plugins.notification.core" />
+        <merges target="plugin.notification.core" />
+    </js-module>
+
+    <!-- ios -->
+    <platform name="ios">
+
+        <config-file target="config.xml" parent="/*">
+            <feature name="Notification">
+                <param name="ios-package" value="Notification" onload="true" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/Notification.h" />
+        <source-file src="src/ios/Notification.m" />
+
+        <header-file src="src/ios/NotificationOptions.h" />
+        <source-file src="src/ios/NotificationOptions.m" />
+
+        <header-file src="src/ios/UIApplication+Notification.h" />
+        <source-file src="src/ios/UIApplication+Notification.m" />
+
+        <header-file src="src/ios/UILocalNotification+Notification.h" />
+        <source-file src="src/ios/UILocalNotification+Notification.m" />
+
+        <header-file src="src/ios/AppDelegate+HandleActionWithIdentifier.h" />
+        <source-file src="src/ios/AppDelegate+HandleActionWithIdentifier.m" />
+
+        <header-file src="src/ios/AppDelegate+RegisterUserNotificationSettings.h" />
+        <source-file src="src/ios/AppDelegate+RegisterUserNotificationSettings.m" />
+
+        <header-file src="src/ios/AppDelegate+RemoteNotifications.h" />
+        <source-file src="src/ios/AppDelegate+RemoteNotifications.m" />
+
+        <config-file target="*-Info.plist" parent="UIBackgroundModes">                  
+        <array>
+          <string>remote-notification</string>
+        </array>
+      </config-file>
+
+    </platform>
+
+    <!-- android -->
+    <platform name="android">
+
+        <framework src="com.android.support:support-v4:+" />
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="Notification">
+                <param name="android-package" value="com.commontime.plugin.notification.Notification"/>
+            </feature>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+
+            <receiver
+                android:name="com.commontime.plugin.notification.TriggerReceiver"
+                android:exported="false" />
+
+            <receiver
+                android:name="com.commontime.plugin.notification.ClearReceiver"
+                android:exported="false" />
+
+            <activity
+                android:name="com.commontime.plugin.notification.ClickActivity"
+                android:launchMode="singleInstance"
+                android:theme="@android:style/Theme.NoDisplay"
+                android:exported="false" />
+
+            <activity
+                android:name="com.commontime.plugin.notification.ActionClickActivity"
+                android:launchMode="singleInstance"
+                android:theme="@android:style/Theme.NoDisplay"
+                android:exported="false" />
+
+            <receiver
+                android:name="com.commontime.plugin.notification.TriggerReceiver"
+                android:exported="false" />
+
+            <receiver
+                android:name="com.commontime.plugin.notification.ClearReceiver"
+                android:exported="false" />            
+
+            <receiver android:name="com.commontime.plugin.notification.RestoreReceiver" android:exported="false" >
+                <intent-filter>
+                    <action android:name="android.intent.action.BOOT_COMPLETED" />
+                </intent-filter>
+            </receiver>
+
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <uses-permission android:name="android.permission.VIBRATE"/>
+            <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+            <permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+            <uses-permission android:name="$PACKAGE_NAME.permission.C2D_MESSAGE" />
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:name="com.commontime.plugin.notification.gcm.PushHandlerActivity" android:exported="true"/>
+            <receiver android:name="com.commontime.plugin.notification.gcm.CordovaGCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+                <intent-filter>
+                    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                    <category android:name="$PACKAGE_NAME" />
+                </intent-filter>
+            </receiver>
+            <service android:name="com.commontime.plugin.notification.gcm.GCMIntentService" />
+        </config-file>
+
+        <source-file
+            src="src/android/Notification.java"
+            target-dir="src/com/commontime/plugin/notification" />
+
+        <source-file
+            src="src/android/TriggerReceiver.java"
+            target-dir="src/com/commontime/plugin/notification" />
+
+        <source-file
+            src="src/android/ClickActivity.java"
+            target-dir="src/com/commontime/plugin/notification" />
+
+        <source-file
+            src="src/android/ActionClickActivity.java"
+            target-dir="src/com/commontime/plugin/notification" />
+
+        <source-file
+            src="src/android/ClearReceiver.java"
+            target-dir="src/com/commontime/plugin/notification" />
+
+        <source-file
+            src="src/android/RestoreReceiver.java"
+            target-dir="src/com/commontime/plugin/notification" />        
+
+        <source-file
+            src="src/android/notification/AbstractClearReceiver.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/AbstractClickActivity.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/AbstractActionClickActivity.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/AbstractRestoreReceiver.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/AbstractTriggerReceiver.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/AssetUtil.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/Builder.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/ClearReceiver.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/ClickActivity.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/ActionClickActivity.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/Manager.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/NotificationWrapper.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/Options.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file
+            src="src/android/notification/TriggerReceiver.java"
+            target-dir="src/com/commontime/plugin/notification/notification" />
+
+        <source-file src="src/android/libs/gcm.jar" target-dir="libs/" />
+        <source-file src="src/android/gcm/CordovaGCMBroadcastReceiver.java" target-dir="src/com/commontime/plugin/notification/gcm/" />
+        <source-file src="src/android/gcm/GCMIntentService.java" target-dir="src/com/commontime/plugin/notification/gcm/" />
+        <source-file src="src/android/gcm/PushHandlerActivity.java" target-dir="src/com/commontime/plugin/notification/gcm/" />
+
+    </platform>
+
+    <!-- windows -->
+    <platform name="windows">
+
+        <js-module src="src/windows/NotificationProxy.js" name="Notification.Proxy" >
+            <merges target="" />
+        </js-module>
+
+        <js-module src="src/windows/NotificationCore.js" name="Notification.Proxy.Core" >
+            <merges target="" />
+        </js-module>
+
+        <js-module src="src/windows/NotificationUtil.js" name="Notification.Proxy.Util" >
+            <merges target="" />
+        </js-module>
+
+        <!-- Platform Hooks -->
+        <hook type="after_platform_add" src="scripts/windows/setToastCapable.js" />
+        <hook type="after_plugin_install" src="scripts/windows/setToastCapable.js" />
+
+        <hook type="after_platform_add" src="scripts/windows/broadcastActivateEvent.js" />
+        <hook type="after_plugin_install" src="scripts/windows/broadcastActivateEvent.js" />
+        <hook type="after_prepare" src="scripts/windows/broadcastActivateEvent.js" />
+
+    </platform>
+
+    <!-- wp8 -->
+    <platform name="wp8">
+
+        <config-file target="config.xml" parent="/*">
+          <feature name="APPNotification">
+            <param name="wp-package" value="Notification"/>
+          </feature>
+        </config-file>
+
+        <config-file target="Properties/WMAppManifest.xml" parent="/Deployment/App/Capabilities">
+          <Capability Name="ID_CAP_PUSH_NOTIFICATION"/>
+        </config-file>
+
+        <source-file src="src/wp8/Notification.cs" />
+        <framework src="src/wp8/Newtonsoft.Json.dll" custom="true" />
+
+    </platform>
+
+</plugin>
