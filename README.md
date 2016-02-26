@@ -62,7 +62,7 @@ Find out more informations [here][wiki_kitchensink] in our wiki.
 The sample demonstrates how to schedule a local notification which repeats every week. The listener will be called when the user has clicked on the local notification.
 
 ```javascript
-cordova.plugins.notification.local.schedule({
+cordova.plugins.notification.schedule({
     id: 1,
     title: "Production Jour fixe",
     text: "Duration 1h",
@@ -73,7 +73,7 @@ cordova.plugins.notification.local.schedule({
     data: { meetingId:"123#fg8" }
 });
 
-cordova.plugins.notification.local.on("interactedWith", function (notification) {
+cordova.plugins.notification.on("interactedWith", function (notification) {
     joinMeeting(notification.data.meetingId);
 });
 ```
@@ -81,7 +81,7 @@ cordova.plugins.notification.local.on("interactedWith", function (notification) 
 Below shows how to set actions on notifications and the function to listener for a reponse.
 
 ```javascript
-cordova.plugins.notification.local.schedule({
+cordova.plugins.notification.schedule({
 	id: 1,
 	title: "Scheduled notification with delay",
 	text: "Message",
@@ -97,7 +97,7 @@ cordova.plugins.notification.local.schedule({
 	}
 });
 
-cordova.plugins.notification.local.on("interactedWith", function(notification) {
+cordova.plugins.notification.on("interactedWith", function(notification) {
     var identifier = notification.actionResponseIdentifier;
     var responseText = notification.actionResponse; // If textInput is not set to true this will not exist
 }
