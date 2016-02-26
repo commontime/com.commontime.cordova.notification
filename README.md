@@ -28,36 +28,6 @@ The plugin supports the following platforms:
 - __Windows 8.1__
 - __Windows Phone 8.1__
 
-Find out more informations [here][wiki_platforms] in our wiki.
-
-
-## Installation
-The plugin is installable from source and available on Cordova Plugin Registry and PhoneGap Build.
-
-Find out more informations [here][wiki_installation] in our wiki.
-
-
-## I want to get a quick overview
-All wiki pages contain samples, but for a quick overview the sample section may be the fastest way.
-
-Find out more informations [here][wiki_samples] in our wiki.
-
-
-## I want to get a deep overview
-The plugin supports scheduling local notifications in various ways with a single interface. It also allows you to update, clear or cancel them. There are different interfaces to query for local notifications and a complete set of events to hook into the life cycle of local notifications.
-
-Find out more about how to schedule single, multiple, delayed or repeating local notifications [here][wiki_schedule].<br>
-Informations about events like _click_ or _trigger_ can be found [here][wiki_events].
-
-To get a deep overview we recommend to read about all the topics in our [wiki][wiki] and try out the [Kitchen Sink App][wiki_kitchensink]
-
-
-## I want to see the plugin in action
-The plugin offers a kitchen sink sample app. Check out the cordova project and run the app directly from your command line or preferred IDE.
-
-Find out more informations [here][wiki_kitchensink] in our wiki.
-
-
 ## Sample
 The sample demonstrates how to schedule a local notification which repeats every week. The listener will be called when the user has clicked on the local notification.
 
@@ -106,14 +76,4 @@ cordova.plugins.notification.on("interactedWith", function(notification) {
 As well as the local notifications there is also the ability to register and listen for push notifications. The code that has been merged into this plugin to enable this functionality is from the PushPlugin project at https://github.com/phonegap-build/PushPlugin.
 
 [cordova]: https://cordova.apache.org
-[wiki]: https://github.com/katzer/cordova-plugin-local-notifications/wiki
-[wiki_platforms]: https://github.com/katzer/cordova-plugin-local-notifications/wiki/02.-Platforms
-[wiki_installation]: https://github.com/katzer/cordova-plugin-local-notifications/wiki/03.-Installation
-[wiki_kitchensink]: https://github.com/katzer/cordova-plugin-local-notifications/tree/example
-[wiki_schedule]: https://github.com/katzer/cordova-plugin-local-notifications/wiki/04.-Scheduling
-[wiki_events]: https://github.com/katzer/cordova-plugin-local-notifications/wiki/09.-Events
-[wiki_samples]: https://github.com/katzer/cordova-plugin-local-notifications/wiki/11.-Samples
-[wiki_changelog]: https://github.com/katzer/cordova-plugin-local-notifications/wiki/Upgrade-Guide
-[wiki_next]: https://github.com/katzer/cordova-plugin-local-notifications/wiki/Feature-Requests
-[feature_proposal_issue]: https://github.com/katzer/cordova-plugin-local-notifications/issues/451
 [apache2_license]: http://opensource.org/licenses/Apache-2.0
