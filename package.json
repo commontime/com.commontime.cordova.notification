@@ -1,0 +1,29 @@
+{
+  "name": "com.commontime.cordova.notification",
+  "version": "1.0.0",
+  "description": "Commontime cordova notification plugin.",
+  "cordova": {
+    "id": "com.commontime.cordova.notification",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commontime/com.commontime.cordova.notification.git"
+  },
+  "keywords": [
+    "cordova",
+    "notification",
+    "commontime"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "author": "Commontime Ltd",
+  "license": "MIT"
+}
