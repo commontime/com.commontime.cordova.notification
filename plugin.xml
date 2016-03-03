@@ -263,7 +263,7 @@
     <platform name="wp8">
 
         <config-file target="config.xml" parent="/*">
-          <feature name="APPNotification">
+          <feature name="Notification">
             <param name="wp-package" value="Notification"/>
           </feature>
         </config-file>
@@ -273,6 +273,9 @@
         </config-file>
 
         <source-file src="src/wp8/Notification.cs" />
+        <source-file src="src/wp8/NotificationPage.xaml" />
+        <source-file src="src/wp8/NotificationPage.xaml.cs" />
+
         <framework src="src/wp8/Newtonsoft.Json.dll" custom="true" />
 
     </platform>
