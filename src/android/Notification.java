@@ -623,7 +623,6 @@ public class Notification extends CordovaPlugin {
             JSONObject json;
             json = new JSONObject().put("event", "message");
 
-            JSONObject payload = new JSONObject();
             Iterator<String> it = extras.keySet().iterator();
             while (it.hasNext())
             {
@@ -651,29 +650,15 @@ public class Notification extends CordovaPlugin {
                 {
                     json.put(key, extras.getString("message"));
                 }
+                else if (key.equals("payload"))
+                {
+                    createPayloadObject(json, (String) value);
+                }
                 else
                 {
-                     if ( value instanceof String )
+                    if (value instanceof String)
                     {
-                        String strValue = (String)value;
-                        if (strValue.startsWith("{")) {
-                            try {
-                                JSONObject json2 = new JSONObject(strValue);
-                                json.put("payload", json2);
-                            }
-                            catch (Exception e) {
-                            }
-                        }
-                        else if (strValue.startsWith("["))
-                        {
-                            try
-                            {
-                                JSONArray json2 = new JSONArray(strValue);
-                                json.put("payload", json2);
-                            }
-                            catch (Exception e) {
-                            }
-                        }
+                        createPayloadObject(json, (String) value);
                     }
                 }
             } // while
@@ -686,5 +671,28 @@ public class Notification extends CordovaPlugin {
         {
         }
         return null;
+    }
+
+    private static void createPayloadObject(JSONObject json, String value)
+    {
+        String strValue = value;
+        if (strValue.startsWith("{")) {
+            try {
+                JSONObject json2 = new JSONObject(strValue);
+                json.put("payload", json2);
+            }
+            catch (Exception e) {
+            }
+        }
+        else if (strValue.startsWith("["))
+        {
+            try
+            {
+                JSONArray json2 = new JSONArray(strValue);
+                json.put("payload", json2);
+            }
+            catch (Exception e) {
+            }
+        }
     }
 }
