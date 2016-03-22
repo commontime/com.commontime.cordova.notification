@@ -1140,7 +1140,7 @@
     }
     
     if([payload count] > 0)
-        [newPushData setObject:other forKey:@"payload"];
+        [newPushData setObject:payload forKey:@"payload"];
     
     if([other count] > 0)
         [newPushData setObject:other forKey:@"other"];
