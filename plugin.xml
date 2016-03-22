@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.commontime.cordova.notification"
-        version="1.0.4">
+        version="1.0.5">
 
     <name>Notification</name>
     <description>The plugin supports scheduling local and push notifications in various ways with a single interface. It also allows you to update, clear or cancel them. There are different interfaces to query for notifications and a complete set of events to hook into the life cycle of notifications.</description>

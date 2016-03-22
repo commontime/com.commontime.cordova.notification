@@ -1099,7 +1099,7 @@
     
     NSMutableDictionary *newPushData = [[NSMutableDictionary alloc] init];
     
-    NSMutableDictionary *payload = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *other = [[NSMutableDictionary alloc] init];
     
     for(NSString *key in pushData)
     {
@@ -1120,11 +1120,23 @@
             }
             continue;
         }
+        else if([key compare:@"payload"] == NSOrderedSame)
+        {
+            NSDictionary *payloadDictonary = object;
+            
+            for(NSString *payloadKey in payloadDictonary)
+            {
+                id apsObject = [payloadDictonary objectForKey:payloadKey];
+                [newPushData setObject:apsObject forKey:payloadKey];
+            }
+            continue;
+        }
         
-        [payload setObject:object forKey:key];
+        [other setObject:object forKey:key];
     }
     
-    [newPushData setObject:payload forKey:@"payload"];
+    if([other count] > 0)
+        [newPushData setObject:other forKey:@"other"];
     
     [newPushData setObject:@"APNS" forKey:@"service"];
     
