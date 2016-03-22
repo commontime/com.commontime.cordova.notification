@@ -1099,6 +1099,8 @@
     
     NSMutableDictionary *newPushData = [[NSMutableDictionary alloc] init];
     
+    NSMutableDictionary *payload = [[NSMutableDictionary alloc] init];
+    
     NSMutableDictionary *other = [[NSMutableDictionary alloc] init];
     
     for(NSString *key in pushData)
@@ -1126,14 +1128,19 @@
             
             for(NSString *payloadKey in payloadDictonary)
             {
-                id apsObject = [payloadDictonary objectForKey:payloadKey];
-                [newPushData setObject:apsObject forKey:payloadKey];
+                id payloadObject = [payloadDictonary objectForKey:payloadKey];
+                [payload setObject:payloadObject forKey:payloadKey];
             }
             continue;
         }
-        
-        [other setObject:object forKey:key];
+        else
+        {
+            [other setObject:object forKey:key];
+        }
     }
+    
+    if([payload count] > 0)
+        [newPushData setObject:other forKey:@"payload"];
     
     if([other count] > 0)
         [newPushData setObject:other forKey:@"other"];
