@@ -106,7 +106,7 @@ namespace WPCordovaClassLib.Cordova.Commands
               Debug.WriteLine("Firing event: " + script);
 #endif
 
-              cordovaView.Browser.InvokeScript("execScript", script);
+              cordovaView.Browser.InvokeScript("eval", script);
             }
             catch (Exception e)
             {
