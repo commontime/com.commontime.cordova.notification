@@ -64,7 +64,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Bundle extras = intent.getExtras();
 		if (extras != null)
 		{
-			if(!Notification.isInBackground() || (TextUtils.isEmpty(extras.getString("message")) && TextUtils.isEmpty(extras.getString("title"))))
+			if(TextUtils.isEmpty(extras.getString("message")) && TextUtils.isEmpty(extras.getString("title")))
 				Notification.firePushReceivedEvent(extras);
 			else
 				createNotification(context, extras);
