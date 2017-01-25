@@ -74,6 +74,10 @@
         for (NSDictionary* options in notifications) {
             UILocalNotification* notification;
             
+            if([options objectForKey:@"category"] != nil) {
+                [self registerCategory:[options objectForKey:@"category"]];
+            }
+            
             notification = [[UILocalNotification alloc]
                             initWithOptions:options];
             
@@ -590,6 +594,15 @@
 }
 
 /**
+ * Calls the cancel or trigger event after a local notification was received.
+ * Cancels the local notification if autoCancel was set to true.
+ */
+- (void) didReceiveLocalNotificationWithAction:(UILocalNotification*)localNotification
+{
+    [self fireEvent:@"interactedWith" notification:localNotification];
+}
+
+/**
  * Called when app has started
  * (by clicking on a local notification).
  */
@@ -618,6 +631,158 @@
         [self hasPermission:_command];
         _command = NULL;
     }
+}
+
+/**
+ * Called when a notification action has been recieved
+ */
+- (void) handleActionWithIdentifier:(UILocalNotification *)notification
+{
+    [self fireEvent:@"interactedWith" data:notification.userInfo];
+}
+
+- (void)registerCategory:(NSDictionary *)categoryJson
+{
+    NSMutableArray *categories = [[NSMutableArray alloc] init];
+    
+    UIUserNotificationType types;
+    UIUserNotificationSettings *settings;
+    
+    [self removeRegisteredCategoriesPrivate:@[[categoryJson valueForKey:@"identifier"]]];
+    
+    settings = [[UIApplication sharedApplication]
+                currentUserNotificationSettings];
+    
+    types = settings.types|UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound;
+    
+    NSSet *existingCategories = settings.categories;
+    
+    NSMutableArray *actions = [[NSMutableArray alloc] init];
+    for (NSDictionary *action in [categoryJson valueForKey:@"actions"])
+    {
+        UIMutableUserNotificationAction *newAction = [[UIMutableUserNotificationAction alloc] init];
+        if ([[action valueForKey:@"mode"] isEqualToString:@"foreground"])
+        {
+            [newAction setActivationMode:UIUserNotificationActivationModeForeground];
+        }
+        else
+        {
+            [newAction setActivationMode:UIUserNotificationActivationModeBackground];
+        }
+        [newAction setTitle:[action valueForKey:@"title"]];
+        [newAction setIdentifier:[action valueForKey:@"identifier"]];
+        if([[action valueForKey:@"textInput"] boolValue])
+            newAction.behavior = UIUserNotificationActionBehaviorTextInput;
+        [newAction setDestructive:NO];
+        [newAction setAuthenticationRequired:NO];
+        [actions addObject:newAction];
+    }
+    
+    UIMutableUserNotificationCategory *newCategory = [[UIMutableUserNotificationCategory alloc] init];
+    
+    [newCategory setIdentifier:[categoryJson valueForKey:@"identifier"]];
+    
+    [newCategory setActions:actions forContext:UIUserNotificationActionContextDefault];
+    
+    [newCategory setActions:actions forContext:UIUserNotificationActionContextMinimal];
+    
+    [categories addObject:newCategory];
+    
+    [categories addObjectsFromArray:[existingCategories allObjects]];
+    
+    NSSet *categoriesSet = [NSSet setWithArray:categories];
+    
+    settings = [UIUserNotificationSettings settingsForTypes:types categories:categoriesSet];
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    
+}
+
+- (void)getRegisteredCategories:(CDVInvokedUrlCommand *)command
+{
+    [self.commandDelegate runInBackground:^{
+        UIUserNotificationType types;
+        UIUserNotificationSettings *settings;
+        
+        settings = [[UIApplication sharedApplication]
+                    currentUserNotificationSettings];
+        
+        types = settings.types|UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound;
+        
+        NSSet *existingCategories = settings.categories;
+        
+        NSMutableArray *categoriesArray = [[NSMutableArray alloc] init];
+        
+        for(id category in existingCategories)
+        {
+            NSString* categoryId = [category identifier];
+            [categoriesArray addObject:categoryId];
+        }
+        
+        CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:[categoriesArray componentsJoinedByString:@","]];
+        
+        [self.commandDelegate sendPluginResult:result
+                                    callbackId:command.callbackId];
+    }];
+}
+
+- (void)removeRegisteredCategories:(CDVInvokedUrlCommand *)command
+{
+    [self.commandDelegate runInBackground:^{
+        [self removeRegisteredCategoriesPrivate:command.arguments];
+    }];
+}
+
+- (void)removeRegisteredCategoriesPrivate:(NSArray *)categories
+{
+    UIUserNotificationType types;
+    UIUserNotificationSettings *settings;
+    
+    UIUserNotificationSettings *exitingSettings = [[UIApplication sharedApplication]
+                                                   currentUserNotificationSettings];
+    
+    types = settings.types|UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound;
+    
+    NSMutableArray *existingCategories = [exitingSettings.categories allObjects];
+    NSMutableArray *newCategories = [[NSMutableArray alloc] init];
+    
+    for(id category in existingCategories)
+    {
+        bool addToNewList = true;
+        
+        NSString* existingCategoryId = [category identifier];
+        for(NSString *categoryIdentifierToDelete in categories)
+        {
+            if([categoryIdentifierToDelete isEqualToString:existingCategoryId])
+            {
+                addToNewList = false;
+                break;
+            }
+        }
+        
+        if(addToNewList)
+            [newCategories addObject:category];
+    }
+    
+    NSSet *newCategoriesSet = [NSSet setWithArray:newCategories];
+    
+    settings = [UIUserNotificationSettings settingsForTypes:types categories:newCategoriesSet];
+    
+    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+}
+
+- (void)clearRegisteredCategories:(CDVInvokedUrlCommand *)command
+{
+    [self.commandDelegate runInBackground:^{
+        UIUserNotificationType types;
+        UIUserNotificationSettings *settings;
+        
+        types = settings.types|UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound;
+        
+        settings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+        
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    }];
 }
 
 #pragma mark -

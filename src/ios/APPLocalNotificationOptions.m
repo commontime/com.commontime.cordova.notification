@@ -90,6 +90,30 @@ NSString* const DEFAULT_SOUND = @"res://platform_default";
     return [[dict objectForKey:@"badge"] intValue];
 }
 
+/**
+ * The notification's category.
+ */
+- (NSDictionary*) category
+{
+    return [dict objectForKey:@"category"];
+}
+
+/**
+ * The notification's action response identifier.
+ */
+- (NSString*) actionResponseIdentifier
+{
+    return [dict objectForKey:@"actionResponseIdentifier"];
+}
+
+/**
+ * The notification's action response.
+ */
+- (NSObject*) actionResponse
+{
+    return [dict objectForKey:@"actionResponse"];
+}
+
 #pragma mark -
 #pragma mark Complex Attributes
 
