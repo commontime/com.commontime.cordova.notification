@@ -20,15 +20,17 @@
  *
  * @APPPLANT_LICENSE_HEADER_END@
  */
+ 
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@interface NotificationOptions : NSObject
+@interface APPLocalNotificationOptions : NSObject
 
 - (id) initWithDict:(NSDictionary*)dict;
 
 @property (readonly, getter=id) NSNumber* id;
 @property (readonly, getter=badgeNumber) NSInteger badgeNumber;
 @property (readonly, getter=alertBody) NSString* alertBody;
-@property (readonly, getter=category) NSString* category;
 @property (readonly, getter=soundName) NSString* soundName;
 @property (readonly, getter=fireDate) NSDate* fireDate;
 @property (readonly, getter=repeatInterval) NSCalendarUnit repeatInterval;

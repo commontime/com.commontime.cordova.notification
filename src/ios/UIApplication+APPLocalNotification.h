@@ -21,9 +21,9 @@
  * @APPPLANT_LICENSE_HEADER_END@
  */
 
-#import "UILocalNotification+Notification.h"
+#import "UILocalNotification+APPLocalNotification.h"
 
-@interface UIApplication (Notification)
+@interface UIApplication (APPLocalNotification)
 
 @property (readonly, getter=localNotifications) NSArray* localNotifications;
 @property (readonly, getter=localNotificationIds) NSArray* localNotificationIds;
@@ -34,26 +34,26 @@
 - (void) registerPermissionToScheduleLocalNotifications;
 
 // List of all local notification IDs from given type
-- (NSArray*) localNotificationIdsByType:(NotificationType)type;
+- (NSArray*) localNotificationIdsByType:(APPLocalNotificationType)type;
 
 // If local notification with ID exists
 - (BOOL) localNotificationExist:(NSNumber*)id;
 // If local notification with ID and type exists
-- (BOOL) localNotificationExist:(NSNumber*)id type:(NotificationType)type;
+- (BOOL) localNotificationExist:(NSNumber*)id type:(APPLocalNotificationType)type;
 
 // Local notification by ID
 - (UILocalNotification*) localNotificationWithId:(NSNumber*)id;
 // Local notification by ID and type
-- (UILocalNotification*) localNotificationWithId:(NSNumber*)id andType:(NotificationType)type;
+- (UILocalNotification*) localNotificationWithId:(NSNumber*)id andType:(APPLocalNotificationType)type;
 
 // Property list from all local notifications
 - (NSArray*) localNotificationOptions;
 // Property list from given local notifications
 - (NSArray*) localNotificationOptionsById:(NSArray*)ids;
 // Property list from all local notifications with type constraint
-- (NSArray*) localNotificationOptionsByType:(NotificationType)type;
+- (NSArray*) localNotificationOptionsByType:(APPLocalNotificationType)type;
 // Property list from given local notifications with type constraint
-- (NSArray*) localNotificationOptionsByType:(NotificationType)type andId:(NSArray*)ids;
+- (NSArray*) localNotificationOptionsByType:(APPLocalNotificationType)type andId:(NSArray*)ids;
 
 // Clear single local notfications
 - (void) clearLocalNotification:(UILocalNotification*)notification;

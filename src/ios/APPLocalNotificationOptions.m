@@ -21,19 +21,19 @@
  * @APPPLANT_LICENSE_HEADER_END@
  */
 
-#import "NotificationOptions.h"
+#import "APPLocalNotificationOptions.h"
 
 // Default sound ressource path
 NSString* const DEFAULT_SOUND = @"res://platform_default";
 
-@interface NotificationOptions ()
+@interface APPLocalNotificationOptions ()
 
 // The dictionary which contains all notification properties
 @property(nonatomic, retain) NSDictionary* dict;
 
 @end
 
-@implementation NotificationOptions
+@implementation APPLocalNotificationOptions
 
 @synthesize dict;
 
@@ -42,7 +42,7 @@ NSString* const DEFAULT_SOUND = @"res://platform_default";
 
 /**
  * Initialize the object with the given options when calling on JS side:
- * notification.add(options)
+ * notification.local.add(options)
  */
 - (id) initWithDict:(NSDictionary*)dictionary
 {
@@ -88,30 +88,6 @@ NSString* const DEFAULT_SOUND = @"res://platform_default";
 - (NSInteger) badgeNumber
 {
     return [[dict objectForKey:@"badge"] intValue];
-}
-
-/**
- * The notification's category.
- */
-- (NSDictionary*) category
-{
-    return [dict objectForKey:@"category"];
-}
-
-/**
- * The notification's action response identifier.
- */
-- (NSString*) actionResponseIdentifier
-{
-    return [dict objectForKey:@"actionResponseIdentifier"];
-}
-
-/**
- * The notification's action response.
- */
-- (NSObject*) actionResponse
-{
-    return [dict objectForKey:@"actionResponse"];
 }
 
 #pragma mark -
@@ -196,6 +172,9 @@ NSString* const DEFAULT_SOUND = @"res://platform_default";
     }
     else if ([interval isEqualToString:@"month"]) {
         return NSCalendarUnitMonth;
+    }
+    else if ([interval isEqualToString:@"quarter"]) {
+        return NSCalendarUnitQuarter;
     }
     else if ([interval isEqualToString:@"year"]) {
         return NSCalendarUnitYear;

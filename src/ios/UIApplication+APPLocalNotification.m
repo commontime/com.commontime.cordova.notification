@@ -21,10 +21,10 @@
  * @APPPLANT_LICENSE_HEADER_END@
  */
 
-#import "UIApplication+Notification.h"
-#import "UILocalNotification+Notification.h"
+#import "UIApplication+APPLocalNotification.h"
+#import "UILocalNotification+APPLocalNotification.h"
 
-@implementation UIApplication (Notification)
+@implementation UIApplication (APPLocalNotification)
 
 #pragma mark -
 #pragma mark Permissions
@@ -61,18 +61,14 @@
     {
         UIUserNotificationType types;
         UIUserNotificationSettings *settings;
-        NSSet *categories;
 
         settings = [[UIApplication sharedApplication]
                     currentUserNotificationSettings];
-                      
-        
 
         types = settings.types|UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound;
-        categories = settings.categories;
 
         settings = [UIUserNotificationSettings settingsForTypes:types
-                                                     categories:categories];
+                                                     categories:nil];
 
         [[UIApplication sharedApplication]
          registerUserNotificationSettings:settings];
@@ -142,7 +138,7 @@
  * @param type
  *      Notification life cycle type
  */
-- (NSArray*) localNotificationIdsByType:(NotificationType)type
+- (NSArray*) localNotificationIdsByType:(APPLocalNotificationType)type
 {
     NSArray* notifications = self.localNotifications;
     NSMutableArray* ids = [[NSMutableArray alloc] init];
@@ -175,7 +171,7 @@
  * @param type
  *      Notification life cycle type
  */
-- (BOOL) localNotificationExist:(NSNumber*)id type:(NotificationType)type
+- (BOOL) localNotificationExist:(NSNumber*)id type:(APPLocalNotificationType)type
 {
     return [self localNotificationWithId:id andType:type] != NULL;
 }
@@ -192,7 +188,9 @@
 
     for (UILocalNotification* notification in notifications)
     {
-        if ([notification.options.id isEqualToNumber:id]) {
+        NSString* fid = [NSString stringWithFormat:@"%@", notification.options.id];
+        
+        if ([fid isEqualToString:[id stringValue]]) {
             return notification;
         }
     }
@@ -208,7 +206,7 @@
  * @param type
  *      Notification life cycle type
  */
-- (UILocalNotification*) localNotificationWithId:(NSNumber*)id andType:(NotificationType)type
+- (UILocalNotification*) localNotificationWithId:(NSNumber*)id andType:(APPLocalNotificationType)type
 {
     UILocalNotification* notification = [self localNotificationWithId:id];
 
@@ -240,7 +238,7 @@
  * @param type
  *      Notification life cycle type
  */
-- (NSArray*) localNotificationOptionsByType:(NotificationType)type
+- (NSArray*) localNotificationOptionsByType:(APPLocalNotificationType)type
 {
     NSArray* notifications = self.localNotifications;
     NSMutableArray* options = [[NSMutableArray alloc] init];
@@ -286,7 +284,7 @@
  * @param ids
  *      Notification IDs
  */
-- (NSArray*) localNotificationOptionsByType:(NotificationType)type andId:(NSArray*)ids
+- (NSArray*) localNotificationOptionsByType:(APPLocalNotificationType)type andId:(NSArray*)ids
 {
     UILocalNotification* notification;
     NSMutableArray* options = [[NSMutableArray alloc] init];

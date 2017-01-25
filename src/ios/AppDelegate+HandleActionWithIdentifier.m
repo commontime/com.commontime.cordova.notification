@@ -1,5 +1,5 @@
 #import "AppDelegate+HandleActionWithIdentifier.h"
-#import "UILocalNotification+Notification.h"
+#import "UILocalNotification+APPLocalNotification.h"
 #import "Notification.h"
 #import <Availability.h>
 

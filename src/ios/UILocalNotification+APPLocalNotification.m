@@ -21,16 +21,16 @@
  * @APPPLANT_LICENSE_HEADER_END@
  */
 
-#import "UILocalNotification+Notification.h"
-#import "NotificationOptions.h"
+#import "UILocalNotification+APPLocalNotification.h"
+#import "APPLocalNotificationOptions.h"
 #import <objc/runtime.h>
 
 static char optionsKey;
 
-NSInteger const NotificationTypeScheduled = 1;
-NSInteger const NotificationTypeTriggered = 2;
+NSInteger const APPLocalNotificationTypeScheduled = 1;
+NSInteger const APPLocalNotificationTypeTriggered = 2;
 
-@implementation UILocalNotification (Notification)
+@implementation UILocalNotification (APPLocalNotification)
 
 #pragma mark -
 #pragma mark Init
@@ -56,18 +56,16 @@ NSInteger const NotificationTypeTriggered = 2;
  */
 - (void) __init
 {
-    NotificationOptions* options = self.options;
+    APPLocalNotificationOptions* options = self.options;
 
     self.fireDate = options.fireDate;
     self.timeZone = [NSTimeZone defaultTimeZone];
     self.applicationIconBadgeNumber = options.badgeNumber;
-    self.repeatInterval = options.repeatInterval;
+    if (NSCalendarUnitEra != options.repeatInterval) {
+        self.repeatInterval = options.repeatInterval;
+    }
     self.alertBody = options.alertBody;
     self.soundName = options.soundName;
-    if(options.category != nil) {
-        self.category = [options.category valueForKey:@"identifier"];
-    }
-    self.userInfo = options.userInfo;
 
     if ([self wasInThePast]) {
         self.fireDate = [NSDate date];
@@ -80,12 +78,12 @@ NSInteger const NotificationTypeTriggered = 2;
 /**
  * The options provided by the plug-in.
  */
-- (NotificationOptions*) options
+- (APPLocalNotificationOptions*) options
 {
-    NotificationOptions* options = [self getOptions];
+    APPLocalNotificationOptions* options = [self getOptions];
 
     if (!options) {
-        options = [[NotificationOptions alloc]
+        options = [[APPLocalNotificationOptions alloc]
                    initWithDict:[self userInfo]];
 
         [self setOptions:options];
@@ -97,7 +95,7 @@ NSInteger const NotificationTypeTriggered = 2;
 /**
  * Get associated option object
  */
-- (NotificationOptions*) getOptions
+- (APPLocalNotificationOptions*) getOptions
 {
     return objc_getAssociatedObject(self, &optionsKey);
 }
@@ -105,7 +103,7 @@ NSInteger const NotificationTypeTriggered = 2;
 /**
  * Set associated option object
  */
-- (void) setOptions:(NotificationOptions*)options
+- (void) setOptions:(APPLocalNotificationOptions*)options
 {
     objc_setAssociatedObject(self, &optionsKey,
                              options, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -172,9 +170,12 @@ NSInteger const NotificationTypeTriggered = 2;
 
     [obj removeObjectForKey:@"updatedAt"];
 
+    if (obj == NULL || obj.count == 0)
+        return json;
+
     data = [NSJSONSerialization dataWithJSONObject:obj
                                            options:NSJSONWritingPrettyPrinted
-                                             error:Nil];
+                                             error:NULL];
 
     json = [[NSString alloc] initWithData:data
                                  encoding:NSUTF8StringEncoding];
@@ -240,7 +241,7 @@ NSInteger const NotificationTypeTriggered = 2;
 /**
  * Process state type of the local notification.
  */
-- (NotificationType) type
+- (APPLocalNotificationType) type
 {
     return [self isTriggered] ? NotifcationTypeTriggered : NotifcationTypeScheduled;
 }

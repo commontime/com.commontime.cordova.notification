@@ -21,20 +21,20 @@
  * @APPPLANT_LICENSE_HEADER_END@
  */
 
-#import "NotificationOptions.h"
+#import "APPLocalNotificationOptions.h"
 
-typedef NS_ENUM(NSUInteger, NotificationType) {
+typedef NS_ENUM(NSUInteger, APPLocalNotificationType) {
     NotifcationTypeAll = 0,
     NotifcationTypeScheduled = 1,
     NotifcationTypeTriggered = 2
 };
 
-@interface UILocalNotification (Notification)
+@interface UILocalNotification (APPLocalNotification)
 
 // Initialize a new local notification
 - (id) initWithOptions:(NSDictionary*)dict;
 // The options provided by the plug-in
-- (NotificationOptions*) options;
+- (APPLocalNotificationOptions*) options;
 // Timeinterval since last trigger date
 - (double) timeIntervalSinceLastTrigger;
 // Timeinterval since fire date
@@ -50,7 +50,7 @@ typedef NS_ENUM(NSUInteger, NotificationType) {
 // If it's a repeating notification
 - (BOOL) isRepeating;
 // Notifciation type
-- (NotificationType) type;
+- (APPLocalNotificationType) type;
 // Encode the user info dict to JSON
 - (NSString*) encodeToJSON;
 

@@ -3,7 +3,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="com.commontime.cordova.notification"
-        version="1.0.9">
+        version="1.0.10">
 
     <name>Notification</name>
     <description>The plugin supports scheduling local and push notifications in various ways with a single interface. It also allows you to update, clear or cancel them. There are different interfaces to query for notifications and a complete set of events to hook into the life cycle of notifications.</description>
@@ -14,6 +14,7 @@
     <!-- cordova -->
     <engines>
         <engine name="cordova" version=">=3.6.0" />
+        <engine name="cordova-windows" version=">=4.2.0" />
     </engines>
 
     <!-- dependencies -->
@@ -48,14 +49,14 @@
         <header-file src="src/ios/Notification.h" />
         <source-file src="src/ios/Notification.m" />
 
-        <header-file src="src/ios/NotificationOptions.h" />
-        <source-file src="src/ios/NotificationOptions.m" />
+        <header-file src="src/ios/APPLocalNotificationOptions.h" />
+        <source-file src="src/ios/APPLocalNotificationOptions.m" />
 
-        <header-file src="src/ios/UIApplication+Notification.h" />
-        <source-file src="src/ios/UIApplication+Notification.m" />
+        <header-file src="src/ios/UIApplication+APPLocalNotification.h" />
+        <source-file src="src/ios/UIApplication+APPLocalNotification.m" />
 
-        <header-file src="src/ios/UILocalNotification+Notification.h" />
-        <source-file src="src/ios/UILocalNotification+Notification.m" />
+        <header-file src="src/ios/UILocalNotification+APPLocalNotification.h" />
+        <source-file src="src/ios/UILocalNotification+APPLocalNotification.m" />
 
         <header-file src="src/ios/AppDelegate+HandleActionWithIdentifier.h" />
         <source-file src="src/ios/AppDelegate+HandleActionWithIdentifier.m" />

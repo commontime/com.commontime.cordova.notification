@@ -22,7 +22,6 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <Cordova/CDV.h>
 #import <Cordova/CDVPlugin.h>
 
 @interface Notification : CDVPlugin
@@ -87,6 +86,7 @@
 - (void) getScheduled:(CDVInvokedUrlCommand*)command;
 // Property list for given triggered notifications
 - (void) getTriggered:(CDVInvokedUrlCommand*)command;
+
 
 // Get registered categories
 - (void) getRegisteredCategories:(CDVInvokedUrlCommand *)command;
