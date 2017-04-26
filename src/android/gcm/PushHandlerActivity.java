@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -50,8 +51,36 @@ public class PushHandlerActivity extends Activity
 		Bundle extras = getIntent().getExtras();
 
 		if (extras != null)	{
+
+			int notId = 0;
+
+			// Get Notification id, and clear notification
+			Bundle pushBundle = extras.getBundle("pushBundle");
+			if( pushBundle != null && pushBundle.containsKey("notId")) {
+				notId = Integer.parseInt(pushBundle.getString("notId"));
+			}
+
+			String tag = getAppName(this);
+
+			final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+			notificationManager.cancel(tag, notId);
+			NotificationMediaPlayer.getInstance().stop(notId);
+
+			String actionResponse = getIntent().getAction();
+			extras.getBundle("pushBundle").putString("action", actionResponse);
+
 			Notification.firePushReceivedEvent(extras.getBundle("pushBundle"));
 		}
+	}
+
+	private static String getAppName(Context context)
+	{
+		CharSequence appName =
+				context
+						.getPackageManager()
+						.getApplicationLabel(context.getApplicationInfo());
+
+		return (String)appName;
 	}
 
 	/**

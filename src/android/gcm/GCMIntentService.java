@@ -1,14 +1,20 @@
 package com.commontime.plugin.notification.gcm;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,11 +22,19 @@ import android.util.Log;
 import com.commontime.plugin.notification.Notification;
 import com.google.android.gcm.GCMBaseIntentService;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import static android.R.id.input;
+
 @SuppressLint("NewApi")
 public class GCMIntentService extends GCMBaseIntentService {
 
 	private static final String TAG = "GCMIntentService";
-	
+
 	public GCMIntentService() {
 		super("GCMIntentService");
 	}
@@ -89,16 +103,84 @@ public class GCMIntentService extends GCMBaseIntentService {
 				defaults = Integer.parseInt(extras.getString("defaults"));
 			} catch (NumberFormatException e) {}
 		}
-		
+
 		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
-				.setDefaults(defaults)
+				//.setDefaults(defaults)
 				.setSmallIcon(context.getApplicationInfo().icon)
 				.setWhen(System.currentTimeMillis())
 				.setContentTitle(extras.getString("title"))
 				.setTicker(extras.getString("title"))
 				.setContentIntent(contentIntent)
 				.setAutoCancel(true);
+
+		if( extras.containsKey("vibrate")) {
+			try {
+				JSONArray patternJSON = new JSONArray(extras.getString("vibrate"));
+				long[] pattern = new long[patternJSON.length()];
+				for( int i = 0; i < patternJSON.length(); i++ ) {
+					pattern[i] = patternJSON.getLong(i);
+				}
+				mBuilder.setVibrate(pattern);
+
+			} catch(JSONException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if( extras.containsKey("sound")) {
+			try {
+
+				int notId = 0;
+				if( extras.containsKey("notId")) {
+					notId = Integer.parseInt(extras.getString("notId"));
+				}
+
+				JSONObject sound = new JSONObject(extras.getString("sound"));
+
+				boolean loop = sound.optBoolean("loop", false);
+				int volumePercentage = sound.optInt("volume", 100);
+				String file = sound.getString("file");
+
+				NotificationMediaPlayer.getInstance().play( context, file, volumePercentage, loop, notId );
+
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if( extras.containsKey("actions") ) {
+
+			try {
+				JSONArray actions = new JSONArray(extras.getString("actions"));
+				for( int i = 0; i < actions.length(); i++ ) {
+                    JSONObject actObj = actions.getJSONObject(i);
+    				String title = actObj.getString("title");
+
+					Intent actionNotificationIntent = new Intent(this, PushHandlerActivity.class);
+					actionNotificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+					JSONObject actionResponse = new JSONObject();
+					actionNotificationIntent.setAction(actObj.getString("identifier"));
+
+					Bundle actionBundle = (Bundle) extras.clone();
+					JSONObject payload = new JSONObject();
+					payload.put("actions", new JSONArray(actionBundle.getString("actions")));
+					actionBundle.putString("payload", payload.toString());
+
+					actionNotificationIntent.putExtra("pushBundle", actionBundle);
+
+					PendingIntent actionContentIntent = PendingIntent.getActivity(this, 0, actionNotificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+					NotificationCompat.Action action = new NotificationCompat.Action(0, title, actionContentIntent );
+                    mBuilder.addAction(action);
+                }
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 
 		String message = extras.getString("message");
 		if (message != null) {
@@ -141,5 +223,4 @@ public class GCMIntentService extends GCMBaseIntentService {
 	public void onError(Context context, String errorId) {
 		Log.e(TAG, "onError - errorId: " + errorId);
 	}
-
 }

@@ -654,6 +654,10 @@ public class Notification extends CordovaPlugin {
                 {
                     createPayloadObject(json, (String) value);
                 }
+                else if (key.equals("action"))
+                {
+                    createActionObject(json, (String) value);
+                }
                 else
                 {
                     if (value instanceof String)
@@ -671,6 +675,13 @@ public class Notification extends CordovaPlugin {
         {
         }
         return null;
+    }
+
+    private static void createActionObject(JSONObject json, String value) {
+        try {
+            json.put("actionResponseIdentifier", value);
+        } catch (JSONException e) {
+        }
     }
 
     private static void createPayloadObject(JSONObject json, String value)
