@@ -658,6 +658,22 @@ public class Notification extends CordovaPlugin {
                 {
                     createActionObject(json, (String) value);
                 }
+                else if (key.equals("actions"))
+                {
+                    createJSON(json, key, (String) value);
+                }
+                else if (key.equals("sound"))
+                {
+                    createJSON(json, key, (String) value);
+                }
+                else if (key.equals("vibrate"))
+                {
+                    createJSON(json, key, (String) value);
+                }
+                else if (key.equals("deleted"))
+                {
+                    createBoolean(json, key, (Boolean) value);
+                }
                 else
                 {
                     if (value instanceof String)
@@ -675,6 +691,28 @@ public class Notification extends CordovaPlugin {
         {
         }
         return null;
+    }
+
+    private static void createBoolean(JSONObject json, String key, boolean value) {
+        try {
+            json.put(key, value);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void createJSON(JSONObject json, String key, String value) {
+        try {
+            if( value.trim().startsWith("[")) {
+                JSONArray array = new JSONArray(value);
+                json.put(key, array);
+            } else {
+                JSONObject object = new JSONObject(value);
+                json.put(key, object);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void createActionObject(JSONObject json, String value) {

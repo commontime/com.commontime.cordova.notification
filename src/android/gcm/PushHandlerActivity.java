@@ -67,7 +67,13 @@ public class PushHandlerActivity extends Activity
 			NotificationMediaPlayer.getInstance().stop(notId);
 
 			String actionResponse = getIntent().getAction();
-			extras.getBundle("pushBundle").putString("action", actionResponse);
+
+			if( actionResponse != null && actionResponse.equals( getPackageName() + "|deleted" )) {
+				extras.getBundle("pushBundle").putBoolean("deleted", true);
+
+			} else {
+				extras.getBundle("pushBundle").putString("action", actionResponse);
+			}
 
 			Notification.firePushReceivedEvent(extras.getBundle("pushBundle"));
 		}

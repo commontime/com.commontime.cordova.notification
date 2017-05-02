@@ -7,9 +7,11 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -144,6 +146,16 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 				NotificationMediaPlayer.getInstance().play( context, file, volumePercentage, loop, notId );
 
+				Intent deleteNotificationIntent = new Intent(this, PushHandlerActivity.class);
+				deleteNotificationIntent.setAction( getPackageName() + "|deleted");
+				deleteNotificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+				Bundle deleteBundle = (Bundle) extras.clone();
+				deleteNotificationIntent.putExtra("pushBundle", deleteBundle);
+
+				PendingIntent deleteIntent = PendingIntent.getActivity(this, 0, deleteNotificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+				mBuilder.setDeleteIntent(deleteIntent);
+
 			} catch (JSONException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -166,9 +178,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 					actionNotificationIntent.setAction(actObj.getString("identifier"));
 
 					Bundle actionBundle = (Bundle) extras.clone();
-					JSONObject payload = new JSONObject();
-					payload.put("actions", new JSONArray(actionBundle.getString("actions")));
-					actionBundle.putString("payload", payload.toString());
 
 					actionNotificationIntent.putExtra("pushBundle", actionBundle);
 
