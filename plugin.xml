@@ -232,6 +232,7 @@
         <source-file src="src/android/gcm/CordovaGCMBroadcastReceiver.java" target-dir="src/com/commontime/plugin/notification/gcm/" />
         <source-file src="src/android/gcm/GCMIntentService.java" target-dir="src/com/commontime/plugin/notification/gcm/" />
         <source-file src="src/android/gcm/PushHandlerActivity.java" target-dir="src/com/commontime/plugin/notification/gcm/" />
+        <source-file src="src/android/gcm/NotificationMediaPlayer.java" target-dir="src/com/commontime/plugin/notification/gcm/" />
 
     </platform>
 
