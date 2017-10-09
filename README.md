@@ -2,7 +2,7 @@
 Cordova Notification Plugin
 =================================
 
-A modified version of Katzer local-notification plugin found at https://github.com/katzer/cordova-common-registerusernotificationsettings/blob/master/plugin.xml. This adds in the ability to include actions for both iOS and Android and hook into the user's response in JavaScript.
+A modified version of Katzer local-notification plugin found at https://github.com/katzer/cordova-plugin-local-notifications. This adds in the ability to include actions for both iOS and Android and hook into the user's response in JavaScript.
 
 The essential purpose of local notifications is to enable an application to inform its users that it has something for them — for example, a message or an upcoming appointment — when the application isn’t running in the foreground.<br>
 They are scheduled by an application and delivered on the same device.
