@@ -75,6 +75,8 @@ public class PushHandlerActivity extends Activity
 				extras.getBundle("pushBundle").putString("action", actionResponse);
 			}
 
+			Log.i(TAG, "Push Bundle Sent now!");
+
 			Notification.firePushReceivedEvent(extras.getBundle("pushBundle"));
 		}
 	}
