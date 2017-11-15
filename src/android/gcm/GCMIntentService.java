@@ -91,6 +91,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 				Notification.firePushReceivedEvent(extras);
 			} else {
 				String inAppPush = preferences.get("inAppPush");
+				System.out.println("inAppPush: " + inAppPush);
 				if(inAppPush != null && inAppPush.equalsIgnoreCase("immediate")) {
 					if(Notification.isInBackground()) {
 						createNotification(context, extras);
@@ -267,13 +268,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 						for (int attr = 0; attr < parser.getAttributeCount(); attr++) {
 							String name = parser.getAttributeName(attr);
 							String val = parser.getAttributeValue(attr);
-							System.out.println(name +":"+val);
 
 							if( name.equals( "name") ) {
 								prefName = val;
 							} else if( name.equals( "value") ) {
 								prefValue = val;
 							}
+
+							System.out.println(prefName +":"+prefValue);
 
 							if( prefName != null && prefValue != null ) {
 								preferences.put(prefName, prefValue);
