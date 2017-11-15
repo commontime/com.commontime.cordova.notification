@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.commontime.plugin.notification.Notification;
@@ -48,7 +50,7 @@ public class PushHandlerActivity extends Activity
 	 */
 	private void processPushBundle(boolean isPushPluginActive)
 	{
-		Bundle extras = getIntent().getExtras();
+		final Bundle extras = getIntent().getExtras();
 
 		if (extras != null)	{
 
@@ -75,9 +77,14 @@ public class PushHandlerActivity extends Activity
 				extras.getBundle("pushBundle").putString("action", actionResponse);
 			}
 
-			Log.i(TAG, "Push Bundle Sent now!");
-
-			Notification.firePushReceivedEvent(extras.getBundle("pushBundle"));
+			Handler h = new Handler(Looper.getMainLooper());
+			h.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					Log.i(TAG, "Push Bundle Sent now!");
+					Notification.firePushReceivedEvent(extras.getBundle("pushBundle"));
+				}
+			}, 10000);
 		}
 	}
 
