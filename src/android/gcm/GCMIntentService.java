@@ -127,7 +127,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
-				//.setDefaults(defaults)
+				.setDefaults(defaults)
 				.setSmallIcon(context.getApplicationInfo().icon)
 				.setWhen(System.currentTimeMillis())
 				.setContentTitle(extras.getString("title"))
