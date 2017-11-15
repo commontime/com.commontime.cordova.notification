@@ -114,6 +114,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Intent notificationIntent = new Intent(this, PushHandlerActivity.class);
 		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		notificationIntent.putExtra("pushBundle", extras);
+		notificationIntent.putExtra( "inAppPush", preferences.get("inAppPush"));
 
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		
@@ -127,7 +128,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
-				//.setDefaults(defaults)
+				.setDefaults(defaults)
 				.setSmallIcon(context.getApplicationInfo().icon)
 				.setWhen(System.currentTimeMillis())
 				.setContentTitle(extras.getString("title"))
