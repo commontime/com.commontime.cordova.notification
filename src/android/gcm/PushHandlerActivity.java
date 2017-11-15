@@ -77,14 +77,7 @@ public class PushHandlerActivity extends Activity
 				extras.getBundle("pushBundle").putString("action", actionResponse);
 			}
 
-			Handler h = new Handler(Looper.getMainLooper());
-			h.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					Log.i(TAG, "Push Bundle Sent now!");
-					Notification.firePushReceivedEvent(extras.getBundle("pushBundle"));
-				}
-			}, 10000);
+			Notification.firePushReceivedEvent(extras.getBundle("pushBundle"));
 		}
 	}
 
