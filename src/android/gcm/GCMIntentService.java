@@ -3,6 +3,7 @@ package com.commontime.plugin.notification.gcm;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParserException;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
@@ -12,6 +13,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.XmlResourceParser;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -29,6 +31,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static android.R.id.input;
 
@@ -36,6 +41,7 @@ import static android.R.id.input;
 public class GCMIntentService extends GCMBaseIntentService {
 
 	private static final String TAG = "GCMIntentService";
+	private Map<String, String> preferences = new HashMap<String, String>();
 
 	public GCMIntentService() {
 		super("GCMIntentService");
@@ -45,6 +51,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	public void onRegistered(Context context, String regId) {
 
 		Log.v(TAG, "onRegistered: "+ regId);
+		fetchPreferences();
 
 		JSONObject json;
 
@@ -83,10 +90,15 @@ public class GCMIntentService extends GCMBaseIntentService {
 			if(TextUtils.isEmpty(extras.getString("message")) && TextUtils.isEmpty(extras.getString("title"))) {
 				Notification.firePushReceivedEvent(extras);
 			} else {
-				if(Notification.isInBackground()) {
-					createNotification(context, extras);
+				String inAppPush = preferences.get("inAppPush");
+				if(inAppPush != null && inAppPush.equalsIgnoreCase("immediate")) {
+					if(Notification.isInBackground()) {
+						createNotification(context, extras);
+					} else {
+						Notification.firePushReceivedEvent(extras);
+					}
 				} else {
-					Notification.firePushReceivedEvent(extras);
+					createNotification(context, extras);
 				}
 			}
 		}
@@ -237,4 +249,45 @@ public class GCMIntentService extends GCMBaseIntentService {
 	public void onError(Context context, String errorId) {
 		Log.e(TAG, "onError - errorId: " + errorId);
 	}
+
+	protected void fetchPreferences() {
+		final int identifier = this.getResources().getIdentifier("config","xml", this.getPackageName());
+		final XmlResourceParser parser = this.getResources().getXml(identifier);
+
+		try {
+			for (int eventType = -1; eventType != XmlResourceParser.END_DOCUMENT; eventType = parser.next()) {
+
+				if (eventType == XmlResourceParser.START_TAG) {
+					String s = parser.getName();
+
+					String prefName = null;
+					String prefValue = null;
+
+					if (s.equals("preference")) {
+						for (int attr = 0; attr < parser.getAttributeCount(); attr++) {
+							String name = parser.getAttributeName(attr);
+							String val = parser.getAttributeValue(attr);
+							System.out.println(name +":"+val);
+
+							if( name.equals( "name") ) {
+								prefName = val;
+							} else if( name.equals( "value") ) {
+								prefValue = val;
+							}
+
+							if( prefName != null && prefValue != null ) {
+								preferences.put(prefName, prefValue);
+								break;
+							}
+						}
+					}
+				}
+			}
+		} catch (XmlPullParserException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
