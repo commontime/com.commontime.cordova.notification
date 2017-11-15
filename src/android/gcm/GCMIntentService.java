@@ -51,7 +51,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 	public void onRegistered(Context context, String regId) {
 
 		Log.v(TAG, "onRegistered: "+ regId);
-		fetchPreferences();
 
 		JSONObject json;
 
@@ -82,6 +81,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onMessage(Context context, Intent intent) {
 		Log.d(TAG, "onMessage - context: " + context);
+
+		fetchPreferences();
 
 		// Extract the payload from the message
 		Bundle extras = intent.getExtras();
@@ -275,10 +276,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 								prefValue = val;
 							}
 
-							System.out.println(prefName +":"+prefValue);
-
 							if( prefName != null && prefValue != null ) {
 								preferences.put(prefName, prefValue);
+								System.out.println(prefName +":"+prefValue);
 								break;
 							}
 						}
