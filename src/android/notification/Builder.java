@@ -154,7 +154,7 @@ public class Builder {
                 .setLights(options.getLedColor(), 500, 500);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int resId = assets.getResIdForDrawable("icontransparent");
+            int resId = assets.getResIdForDrawable("/icontransparent.png");
             builder.setSmallIcon(resId);
             builder.setLargeIcon(options.getIconBitmap());
         } else { 
