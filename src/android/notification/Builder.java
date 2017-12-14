@@ -60,7 +60,7 @@ public class Builder {
     private Class<?> actionClickActivity = ActionClickActivity.class;
 
     // Asset util instance
-    private AssetUtil assets;
+    private final AssetUtil assets;
 
     /**
      * Constructor
