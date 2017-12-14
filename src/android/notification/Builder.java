@@ -58,6 +58,9 @@ public class Builder {
     // Activity to handle the action click event
     private Class<?> actionClickActivity = ActionClickActivity.class;
 
+    // Asset util instance
+    private AssetUtil assets;
+
     /**
      * Constructor
      *
@@ -69,6 +72,7 @@ public class Builder {
     public Builder(Context context, JSONObject options) {
         this.context = context;
         this.options = new Options(context).parse(options);
+        this.assets  = AssetUtil.getInstance(context);
     }
 
     /**
@@ -148,14 +152,14 @@ public class Builder {
                 .setStyle(style)
                 .setLights(options.getLedColor(), 500, 500);
 
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			int resId = assets.getResIdForDrawable("icontransparent");
-    		builder.setSmallIcon(resId);
-    		builder.setLargeIcon(options.getIconBitmap());
-		} else { 
-    		builder.setSmallIcon(options.getSmallIcon());
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int resId = assets.getResIdForDrawable("icontransparent");
+            builder.setSmallIcon(resId);
             builder.setLargeIcon(options.getIconBitmap());
-		} 
+        } else { 
+            builder.setSmallIcon(options.getSmallIcon());
+            builder.setLargeIcon(options.getIconBitmap());
+        } 
 
         if (sound != null)
         {
