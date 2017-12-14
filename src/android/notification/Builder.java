@@ -142,13 +142,20 @@ public class Builder {
                 .setContentTitle(options.getTitle())
                 .setContentText(options.getText())
                 .setNumber(options.getBadgeNumber())
-                .setTicker(options.getText())
-                .setSmallIcon(options.getSmallIcon())
-                .setLargeIcon(options.getIconBitmap())
+                .setTicker(options.getText())                
                 .setAutoCancel(options.isAutoClear())
                 .setOngoing(options.isOngoing())
                 .setStyle(style)
                 .setLights(options.getLedColor(), 500, 500);
+
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			int resId = assets.getResIdForDrawable("icontransparent");
+    		builder.setSmallIcon(resId);
+    		builder.setLargeIcon(options.getIconBitmap())
+		} else { 
+    		builder.setSmallIcon(options.getSmallIcon())
+            builder.setLargeIcon(options.getIconBitmap())
+		} 
 
         if (sound != null)
         {
