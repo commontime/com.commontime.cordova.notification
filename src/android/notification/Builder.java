@@ -151,10 +151,10 @@ public class Builder {
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			int resId = assets.getResIdForDrawable("icontransparent");
     		builder.setSmallIcon(resId);
-    		builder.setLargeIcon(options.getIconBitmap())
+    		builder.setLargeIcon(options.getIconBitmap());
 		} else { 
-    		builder.setSmallIcon(options.getSmallIcon())
-            builder.setLargeIcon(options.getIconBitmap())
+    		builder.setSmallIcon(options.getSmallIcon());
+            builder.setLargeIcon(options.getIconBitmap());
 		} 
 
         if (sound != null)
