@@ -140,6 +140,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 				Class<?> cls  = Class.forName(context.getPackageName() + ".R$drawable");
 				int resId = (Integer) cls.getDeclaredField("icontransparent").get(Integer.class);
 				mBuilder.setSmallIcon(resId);
+				mBuilder.setColor(Color.GREEN);
 			} catch (Exception ignore) {
 				mBuilder.setSmallIcon(context.getApplicationInfo().icon);
 			}
