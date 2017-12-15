@@ -31,8 +31,6 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
-import com.commontime.testbed.R;
-
 import org.json.JSONObject;
 
 import java.util.Random;

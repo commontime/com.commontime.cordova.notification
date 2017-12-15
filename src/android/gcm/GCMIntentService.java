@@ -25,7 +25,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.commontime.plugin.notification.Notification;
-import com.commontime.testbed.R;
 import com.google.android.gcm.GCMBaseIntentService;
 
 import java.io.File;
