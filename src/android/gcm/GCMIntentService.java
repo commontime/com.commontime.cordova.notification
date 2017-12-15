@@ -137,7 +137,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 				.setAutoCancel(true);
 
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			mBuilder.setSmallIcon(R.drawable.icontransparent);
+			try {
+				Class<?> cls  = Class.forName(getPackageName() + ".R$drawable");
+				int resId = (Integer) cls.getDeclaredField("icontransparent").get(Integer.class);
+				mBuilder.setSmallIcon(resId);
+			} catch (Exception ignore) {
+				mBuilder.setSmallIcon(context.getApplicationInfo().icon);
+			}
 		} else {
 			mBuilder.setSmallIcon(context.getApplicationInfo().icon);
 		}

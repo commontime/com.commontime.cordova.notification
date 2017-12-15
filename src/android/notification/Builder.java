@@ -152,7 +152,13 @@ public class Builder {
                 .setLights(options.getLedColor(), 500, 500);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder.setSmallIcon(R.drawable.icontransparent);
+            try {
+                Class<?> cls  = Class.forName(context.getPackageName() + ".R$drawable");
+                int resId = (Integer) cls.getDeclaredField("icontransparent").get(Integer.class);
+                builder.setSmallIcon(resId);                
+            } catch (Exception ignore) {
+                builder.setSmallIcon(options.getSmallIcon());
+            }
             builder.setLargeIcon(options.getIconBitmap());
         } else { 
             builder.setSmallIcon(options.getSmallIcon());
