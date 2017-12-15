@@ -127,10 +127,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 			} catch (NumberFormatException e) {}
 		}
 
-		NotificationCompat.BigTextStyle style;
-		style = new NotificationCompat.BigTextStyle()
-                .bigText(extras.getString("message"));
-
 		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
 				.setDefaults(defaults)
@@ -138,8 +134,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 				.setContentTitle(extras.getString("title"))
 				.setTicker(extras.getString("title"))
 				.setContentIntent(contentIntent)
-				.setAutoCancel(true)
-				.setStyle(style);
+				.setAutoCancel(true);
 
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			try {
