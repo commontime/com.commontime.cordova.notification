@@ -129,7 +129,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		NotificationCompat.BigTextStyle style;
 		style = new NotificationCompat.BigTextStyle()
-                .bigText(options.getText());
+                .bigText(extras.getString("title"));
 
 		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
