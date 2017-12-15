@@ -31,6 +31,8 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
+import com.commontime.testbed.R;
+
 import org.json.JSONObject;
 
 import java.util.Random;
@@ -59,9 +61,6 @@ public class Builder {
     // Activity to handle the action click event
     private Class<?> actionClickActivity = ActionClickActivity.class;
 
-    // Asset util instance
-    private AssetUtil assets;
-
     /**
      * Constructor
      *
@@ -73,7 +72,6 @@ public class Builder {
     public Builder(Context context, JSONObject options) {
         this.context = context;
         this.options = new Options(context).parse(options);
-        this.assets  = AssetUtil.getInstance(context);
     }
 
     /**
@@ -154,8 +152,7 @@ public class Builder {
                 .setLights(options.getLedColor(), 500, 500);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int resId = assets.getResIdForDrawable("/icontransparent.png");
-            builder.setSmallIcon(resId);
+            builder.setSmallIcon(R.drawable.icontransparent);
             builder.setLargeIcon(options.getIconBitmap());
         } else { 
             builder.setSmallIcon(options.getSmallIcon());

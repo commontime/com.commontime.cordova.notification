@@ -17,6 +17,7 @@ import android.content.res.XmlResourceParser;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
@@ -24,6 +25,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.commontime.plugin.notification.Notification;
+import com.commontime.testbed.R;
 import com.google.android.gcm.GCMBaseIntentService;
 
 import java.io.File;
@@ -128,12 +130,17 @@ public class GCMIntentService extends GCMBaseIntentService {
 		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
 				.setDefaults(defaults)
-				.setSmallIcon(context.getApplicationInfo().icon)
 				.setWhen(System.currentTimeMillis())
 				.setContentTitle(extras.getString("title"))
 				.setTicker(extras.getString("title"))
 				.setContentIntent(contentIntent)
 				.setAutoCancel(true);
+
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			mBuilder.setSmallIcon(R.drawable.icontransparent);
+		} else {
+			mBuilder.setSmallIcon(context.getApplicationInfo().icon);
+		}
 
 		if( extras.containsKey("vibrate")) {
 			try {
