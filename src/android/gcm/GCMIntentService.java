@@ -137,7 +137,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			try {
-				Class<?> cls  = Class.forName(getPackageName() + ".R$drawable");
+				Class<?> cls  = Class.forName(context.getPackageName() + ".R$drawable");
 				int resId = (Integer) cls.getDeclaredField("icontransparent").get(Integer.class);
 				mBuilder.setSmallIcon(resId);
 			} catch (Exception ignore) {
