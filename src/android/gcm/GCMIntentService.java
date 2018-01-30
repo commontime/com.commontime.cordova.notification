@@ -13,6 +13,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.media.AudioManager;
@@ -88,8 +91,25 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		// Extract the payload from the message
 		Bundle extras = intent.getExtras();
-		if (extras != null)
-		{
+		if (extras != null) {
+			if( Boolean.parseBoolean(extras.getString("startApp", "false"))) {
+				Intent ix = new Intent();
+				ix.addCategory(Intent.CATEGORY_LAUNCHER);
+				ix.setAction(Intent.ACTION_MAIN);
+				ix.setPackage(context.getPackageName());
+				final ResolveInfo resolveInfo = context.getPackageManager().resolveActivity(ix, 0);
+
+				if( resolveInfo != null && resolveInfo.activityInfo != null && resolveInfo.activityInfo.name != null) {
+                    try {
+                        Class<?> c = Class.forName(resolveInfo.activityInfo.name);
+                        Intent i = new Intent(context, c);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(i);
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+			}
 			if(TextUtils.isEmpty(extras.getString("message")) && TextUtils.isEmpty(extras.getString("title"))) {
 				Notification.firePushReceivedEvent(extras);
 			} else {
