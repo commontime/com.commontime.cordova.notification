@@ -471,6 +471,9 @@ public class Notification extends CordovaPlugin {
 
     public static void deviceRegisteredForPush(String token)
     {
+        if (tmpCommand == null)
+            return;
+            
         tmpCommand.success(token);
         tmpCommand = null;
     }
