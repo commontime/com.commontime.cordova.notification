@@ -78,7 +78,7 @@
     <!-- android -->
     <platform name="android">
 
-        <framework src="com.android.support:support-v4:27.0.2" />
+        <framework src="com.android.support:support-v4:26.1.0" />
 
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Notification">
