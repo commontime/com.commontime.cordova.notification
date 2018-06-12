@@ -23,12 +23,15 @@
 
 package com.commontime.plugin.notification.notification;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 
 import org.json.JSONObject;
@@ -41,6 +44,7 @@ import java.util.Random;
  */
 public class Builder {
 
+    public static final String CT_CHANNEL = "ct_channel";
     // Application context passed by constructor
     private final Context context;
 
@@ -138,7 +142,7 @@ public class Builder {
         style = new NotificationCompat.BigTextStyle()
                 .bigText(options.getText());
 
-        builder = new NotificationCompat.Builder(context)
+        builder = new NotificationCompat.Builder(context, CT_CHANNEL)
                 .setDefaults(0)
                 .setContentTitle(options.getTitle())
                 .setContentText(options.getText())
@@ -147,7 +151,14 @@ public class Builder {
                 .setAutoCancel(options.isAutoClear())
                 .setOngoing(options.isOngoing())
                 .setStyle(style)
+                .setChannelId(CT_CHANNEL)
                 .setLights(options.getLedColor(), 500, 500);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(CT_CHANNEL, "Test", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager man = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            man.createNotificationChannel(mChannel);
+        }
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             try {
