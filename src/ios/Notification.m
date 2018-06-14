@@ -195,6 +195,9 @@
 - (void) clearAll:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^{
+    	// Weird to see but setting the badge to a value and then setting it to 0 is required to clear notifications
+    	[self.app setApplicationIconBadgeNumber:1];
+        [self.app setApplicationIconBadgeNumber:0];
         [self clearAllLocalNotifications];
         [self fireEvent:@"clearall"];
         [self execCallback:command];
