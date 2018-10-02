@@ -135,21 +135,22 @@ public class GCMIntentService extends GCMBaseIntentService {
 	
 	private void switchOnScreenAndForeground() {
 
-        boolean screenOn = false;
+//         boolean screenOn = false;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-            if (powerManager.isInteractive()) {
-                screenOn = true;
-            }
-        } else {
-            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-            if (powerManager.isScreenOn()) {
-                screenOn = true;
-            }
-        }
+//         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+//             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+//             if (powerManager.isInteractive()) {
+//                 screenOn = true;
+//             }
+//         } else {
+//             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+//             if (powerManager.isScreenOn()) {
+//                 screenOn = true;
+//             }
+//         }
 
 	Intent intent = new Intent();
+	intent.setPackage("com.commontime.infinity.pagera");
 	intent.setAction("com.commontime.cordova.plugins.insomnia.action_WAKE_UP");
 	sendBroadcast(intent);	
 		
