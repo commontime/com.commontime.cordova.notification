@@ -28,6 +28,9 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
+import android.os.PowerManager;
+import static android.content.Context.POWER_SERVICE;
+
 import com.commontime.plugin.notification.Notification;
 import com.google.android.gcm.GCMBaseIntentService;
 
@@ -127,6 +130,37 @@ public class GCMIntentService extends GCMBaseIntentService {
 			}
 		}
 	}
+	
+	private void switchOnScreenAndForeground() {
+
+        boolean screenOn = false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            if (powerManager.isInteractive()) {
+                screenOn = true;
+            }
+        } else {
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            if (powerManager.isScreenOn()) {
+                screenOn = true;
+            }
+        }
+
+//        if (!(screenOn && foreground)) {
+//            cordova.getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+                    Intent i2 = new Intent("com.commontime.cordova.plugins.insomnia.BlankActivity");
+                    i2.putExtra("turnScreenOn", true);
+                    i2.setPackage(BuildConfig.APPLICATION_ID);
+                    i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i2);
+//                }
+//            });
+//        }
+//        callbackContext.success();
+    }
 
 	public void createNotification(Context context, Bundle extras)
 	{
