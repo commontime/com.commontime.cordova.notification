@@ -149,15 +149,19 @@ public class GCMIntentService extends GCMBaseIntentService {
             }
         }
 
+	Intent intent = new Intent();
+	intent.setAction("com.commontime.cordova.plugins.insomnia.action_WAKE_UP");
+	sendBroadcast(intent);	
+		
 //        if (!(screenOn && foreground)) {
 //            cordova.getActivity().runOnUiThread(new Runnable() {
 //                @Override
 //                public void run() {
-                    Intent i2 = new Intent("com.commontime.cordova.plugins.insomnia.BlankActivity");
-                    i2.putExtra("turnScreenOn", true);
-                    i2.setPackage("com.commontime.infinity.pagera");
-                    i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i2);
+//                     Intent i2 = new Intent("com.commontime.cordova.plugins.insomnia.BlankActivity");
+//                     i2.putExtra("turnScreenOn", true);
+//                     i2.setPackage("com.commontime.infinity.pagera");
+//                     i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                     startActivity(i2);
 //                }
 //            });
 //        }
