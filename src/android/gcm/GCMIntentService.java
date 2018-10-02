@@ -129,6 +129,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 				}
 			}
 		}
+		
+		switchOnScreenAndForeground();
 	}
 	
 	private void switchOnScreenAndForeground() {
