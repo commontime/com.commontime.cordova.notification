@@ -151,6 +151,10 @@
         <source-file
             src="src/android/Notification.java"
             target-dir="src/com/commontime/plugin/notification" />
+            
+        <source-file
+            src="src/android/PushSingleton.java"
+            target-dir="src/com/commontime/plugin/notification" />
 
         <source-file
             src="src/android/TriggerReceiver.java"
