@@ -105,14 +105,16 @@ public class Notification extends CordovaPlugin {
     }
     
     private void tick() {
+        final PowerManager pm = (PowerManager) cordova.getActivity().getSystemService(Context.POWER_SERVICE);
         new Thread( new Runnable() {
             @Override
             public void run() {
                 try {
                     Thread.sleep(5000);
                 } catch (Exception e) {
-                }
-                System.out.println("tick");
+                }                
+                System.out.println("DeviceIdleMode: " + pm.isDeviceIdleMode());
+                System.out.println("PowerSaveMode: " + pm.isPowerSaveMode());
                 tick();
             }
         }).start();
