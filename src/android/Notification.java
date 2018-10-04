@@ -24,7 +24,13 @@
 package com.commontime.plugin.notification;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -69,6 +75,7 @@ public class Notification extends CordovaPlugin {
     private static ArrayList<String> eventQueue = new ArrayList<String>();
 
     private static CallbackContext tmpCommand;
+    private BroadcastReceiver idleReceiver;
 
     /**
      * Called after plugin construction and fields have been initialized.
@@ -81,6 +88,24 @@ public class Notification extends CordovaPlugin {
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         Notification.webView = super.webView;
         PushSingleton.getInstance().setActivity(cordova.getActivity());
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED);
+        idleReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                onDeviceIdleChanged();
+            }
+        };
+        cordova.getActivity().registerReceiver(idleReceiver, filter);
+    }
+
+    private void onDeviceIdleChanged() {
+        PowerManager pm = (PowerManager) cordova.getActivity().getSystemService(Context.POWER_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            System.out.println("DeviceIdleMode: " + pm.isDeviceIdleMode());
+            System.out.println("PowerSaveMode: " + pm.isPowerSaveMode());
+        }
     }
 
     /**
@@ -115,6 +140,7 @@ public class Notification extends CordovaPlugin {
         isInBackground = true;
         Notification.webView = null;
         PushSingleton.getInstance().setActivity(null);
+        cordova.getActivity().unregisterReceiver(idleReceiver);
     }
 
     /**
