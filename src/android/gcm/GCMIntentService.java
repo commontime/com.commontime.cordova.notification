@@ -28,10 +28,8 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 
-import android.os.PowerManager;
-import static android.content.Context.POWER_SERVICE;
-
 import com.commontime.plugin.notification.Notification;
+import com.commontime.plugin.notification.PushSingleton;
 import com.google.android.gcm.GCMBaseIntentService;
 
 import java.io.File;
@@ -96,22 +94,25 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Bundle extras = intent.getExtras();
 		if (extras != null) {
 			if( Boolean.parseBoolean(extras.getString("startApp", "false"))) {
+				if (PushSingleton.getInstance().getActivity() != null) {
+					PushSingleton.getInstance().getActivity().finish();
+				}
 				Intent ix = new Intent();
 				ix.addCategory(Intent.CATEGORY_LAUNCHER);
 				ix.setAction(Intent.ACTION_MAIN);
 				ix.setPackage(context.getPackageName());
 				final ResolveInfo resolveInfo = context.getPackageManager().resolveActivity(ix, 0);
 
-				if( resolveInfo != null && resolveInfo.activityInfo != null && resolveInfo.activityInfo.name != null) {
-                    try {
-                        Class<?> c = Class.forName(resolveInfo.activityInfo.name);
-                        Intent i = new Intent(context, c);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(i);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
+				if (resolveInfo != null && resolveInfo.activityInfo != null && resolveInfo.activityInfo.name != null) {
+					try {
+						Class<?> c = Class.forName(resolveInfo.activityInfo.name);
+						Intent i = new Intent(context, c);
+						i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(i);
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 			if(TextUtils.isEmpty(extras.getString("message")) && TextUtils.isEmpty(extras.getString("title"))) {
 				Notification.firePushReceivedEvent(extras);
@@ -129,45 +130,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 				}
 			}
 		}
-		
-		switchOnScreenAndForeground();
 	}
-	
-	private void switchOnScreenAndForeground() {
-
-//         boolean screenOn = false;
-
-//         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-//             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-//             if (powerManager.isInteractive()) {
-//                 screenOn = true;
-//             }
-//         } else {
-//             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-//             if (powerManager.isScreenOn()) {
-//                 screenOn = true;
-//             }
-//         }
-
-	Intent intent = new Intent();
-	intent.setPackage("com.commontime.infinity.pagera");
-	intent.setAction("com.commontime.cordova.plugins.insomnia.action_WAKE_UP");
-	sendBroadcast(intent);	
-		
-//        if (!(screenOn && foreground)) {
-//            cordova.getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                     Intent i2 = new Intent("com.commontime.cordova.plugins.insomnia.BlankActivity");
-//                     i2.putExtra("turnScreenOn", true);
-//                     i2.setPackage("com.commontime.infinity.pagera");
-//                     i2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                     startActivity(i2);
-//                }
-//            });
-//        }
-//        callbackContext.success();
-    }
 
 	public void createNotification(Context context, Bundle extras)
 	{
