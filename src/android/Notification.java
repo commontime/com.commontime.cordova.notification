@@ -80,6 +80,7 @@ public class Notification extends CordovaPlugin {
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         Notification.webView = super.webView;
+        PushSingleton.getInstance().setActivity(cordova.getActivity());
     }
 
     /**
@@ -113,6 +114,7 @@ public class Notification extends CordovaPlugin {
         deviceready = false;
         isInBackground = true;
         Notification.webView = null;
+        PushSingleton.getInstance().setActivity(null);
     }
 
     /**
