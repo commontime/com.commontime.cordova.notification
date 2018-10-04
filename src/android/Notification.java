@@ -98,6 +98,7 @@ public class Notification extends CordovaPlugin {
                 onDeviceIdleChanged();
             }
         };
+        System.out.println("Registering idleReceiver");       
         cordova.getActivity().registerReceiver(idleReceiver, filter);
     }
 
