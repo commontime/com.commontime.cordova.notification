@@ -91,6 +91,7 @@ public class Notification extends CordovaPlugin {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED);
+        filter.addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED);
         idleReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
