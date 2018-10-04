@@ -100,6 +100,22 @@ public class Notification extends CordovaPlugin {
         };
         System.out.println("Registering idleReceiver");       
         cordova.getActivity().registerReceiver(idleReceiver, filter);
+        
+        tick();
+    }
+    
+    private void tick() {
+        new Thread( new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+                }
+                System.out.println("tick");
+                tick();
+            }
+        }).start();
     }
 
     private void onDeviceIdleChanged() {
