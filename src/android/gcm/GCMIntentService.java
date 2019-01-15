@@ -92,6 +92,12 @@ public class GCMIntentService extends GCMBaseIntentService {
 		// Extract the payload from the message
 		Bundle extras = intent.getExtras();
 		if (extras != null) {
+			if( true ) {
+				Intent i2 = new Intent("com.commontime.cordova.plugins.insomnia.BlankActivity");
+                    		i2.putExtra("turnScreenOn", true);
+                    		i2.setPackage(cordova.getActivity().getPackageName());
+                    		context.startActivity(i2);	
+			}
 			if( Boolean.parseBoolean(extras.getString("startApp", "false"))) {
 				Intent ix = new Intent();
 				ix.addCategory(Intent.CATEGORY_LAUNCHER);
