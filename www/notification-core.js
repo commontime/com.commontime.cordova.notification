@@ -505,20 +505,6 @@ exports.clearRegisteredCategories = function (callback, scope) {
     exec(fn, null, 'Notification', 'clearRegisteredCategories');
 };
 
-// Call this to register for push notifications. Content of [options] depends on whether we are working with APNS (iOS) or GCM (Android)
-exports.registerForPush = function(callback, errorCallback, options) {
-    if (typeof callback !== "function")
-        return;
-    exec(callback, errorCallback, "Notification", "registerForPush", [options]);
-};
-
-// Call this to unregister for push notifications
-exports.unregisterForPush = function(callback, errorCallback, options) {
-    if (typeof callback !== "function")
-        return;
-     exec(callback, errorCallback, "Notification", "unregisterForPush", [options]);
-};
-
 // Call this if you want to show toast notification on WP8
 exports.showToastNotification = function (callback, errorCallback, options) {
     if (typeof callback !== "function")

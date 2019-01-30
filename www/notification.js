@@ -350,14 +350,6 @@ exports.clearRegisteredCategories = function (callback, scope) {
     this.core.clearRegisteredCategories(callback, scope);
 };
 
-exports.registerForPush = function(callback, errorCallback, options) {
-    this.core.registerForPush(callback, errorCallback, options);
-};
-               
-exports.unregisterForPush = function(callback, errorCallback, options) {
-    this.core.unregisterForPush(callback, errorCallback, options);
-};
-
 exports.showToastNotification = function (callback, errorCallback, options) {
     this.core.showToastNotification(callback, errorCallback, options);
 };
