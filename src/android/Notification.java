@@ -24,7 +24,6 @@
 package com.commontime.plugin.notification;
 
 import android.app.Activity;
-import android.os.Bundle;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
@@ -37,12 +36,10 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.commontime.plugin.notification.notification.Manager;
 import com.commontime.plugin.notification.notification.NotificationWrapper;
-import com.google.android.gcm.GCMRegistrar;
 
 /**
  * This plugin utilizes the Android AlarmManager in combination with local
@@ -53,8 +50,6 @@ import com.google.android.gcm.GCMRegistrar;
 public class Notification extends CordovaPlugin {
 
     public static final String EXIT = "exit";
-
-    private static String gSenderID;
 
     // Reference to the web view for static access
     private static CordovaWebView webView = null;
@@ -67,8 +62,6 @@ public class Notification extends CordovaPlugin {
 
     // Queues all events before deviceready
     private static ArrayList<String> eventQueue = new ArrayList<String>();
-
-    private static CallbackContext tmpCommand;
 
     /**
      * Called after plugin construction and fields have been initialized.
@@ -180,10 +173,6 @@ public class Notification extends CordovaPlugin {
                     getScheduled(args, command);
                 } else if (action.equals("getTriggered")) {
                     getTriggered(args, command);
-                } else if (action.equals("registerForPush")) {
-                    registerForPush(args, command);
-                } else if (action.equals("unregisterForPush")) {
-                    unregisterForPush(command);
                 } else if (action.equals("deviceready")) {
                     deviceready();
                 }
@@ -455,35 +444,6 @@ public class Notification extends CordovaPlugin {
         command.success(new JSONArray(options));
     }
 
-    private void registerForPush(JSONArray data, CallbackContext command) {
-        try {
-            tmpCommand = command;
-
-            JSONObject jo = data.getJSONObject(0);
-            gSenderID = (String) jo.get("senderID");
-
-            GCMRegistrar.register(cordova.getActivity().getApplicationContext(), gSenderID);
-            //command.success();
-        } catch (JSONException e) {
-            command.error(e.getMessage());
-        }
-    }
-
-    public static void deviceRegisteredForPush(String token)
-    {
-        if (tmpCommand == null)
-            return;
-            
-        tmpCommand.success(token);
-        tmpCommand = null;
-    }
-
-    private void unregisterForPush(CallbackContext command)
-    {
-        GCMRegistrar.unregister(cordova.getActivity().getApplicationContext());
-        command.success();
-    }
-
     /**
      * Call all pending callbacks after the deviceready event has been fired.
      */
@@ -526,25 +486,6 @@ public class Notification extends CordovaPlugin {
 
         String js = "cordova.plugins.notification.core.fireEvent(" +
                 "\"" + event + "\"," + params + ")";
-
-        sendJavascript(js);
-    }
-
-     /**
-     * Fire given event on JS side. Does inform all event listeners.
-     *
-     * @param data
-     *      Optional local notification to pass the id and properties.
-     */
-    public static void firePushReceivedEvent (Bundle data) {
-        String state = getApplicationState();
-        String params = "\"" + state + "\"";
-
-        if (data != null) {
-            params = convertBundleToJson(data).toString() + "," + params;
-        }
-
-        String js = "cordova.plugins.notification.core.fireEvent(\"pushReceived\"," + params + ")";
 
         sendJavascript(js);
     }
@@ -610,141 +551,5 @@ public class Notification extends CordovaPlugin {
 
     public static boolean isActive() {
         return webView != null;
-    }
-
-    public static boolean isInBackground() {
-        return isInBackground;
-    }
-
-    /*
-     * serializes a bundle to JSON.
-     */
-    private static JSONObject convertBundleToJson(Bundle extras)
-    {
-        try
-        {
-            JSONObject json;
-            json = new JSONObject().put("event", "message");
-
-            Iterator<String> it = extras.keySet().iterator();
-            while (it.hasNext())
-            {
-                String key = it.next();
-                Object value = extras.get(key);
-
-                // System data from Android
-                if (key.equals("from") || key.equals("collapse_key"))
-                {
-                    json.put(key, value);
-                }
-                else if (key.equals("foreground"))
-                {
-                    json.put(key, extras.getBoolean("foreground"));
-                }
-                else if (key.equals("coldstart"))
-                {
-                    json.put(key, extras.getBoolean("coldstart"));
-                }
-                else if (key.equals("title"))
-                {
-                    json.put(key, extras.getString("title"));
-                }
-                else if (key.equals("message"))
-                {
-                    json.put(key, extras.getString("message"));
-                }
-                else if (key.equals("payload"))
-                {
-                    createPayloadObject(json, (String) value);
-                }
-                else if (key.equals("action"))
-                {
-                    createActionObject(json, (String) value);
-                }
-                else if (key.equals("actions"))
-                {
-                    createJSON(json, key, (String) value);
-                }
-                else if (key.equals("sound"))
-                {
-                    createJSON(json, key, (String) value);
-                }
-                else if (key.equals("vibrate"))
-                {
-                    createJSON(json, key, (String) value);
-                }
-                else if (key.equals("deleted"))
-                {
-                    createBoolean(json, key, (Boolean) value);
-                }
-                else
-                {
-                    if (value instanceof String)
-                    {
-                        createPayloadObject(json, (String) value);
-                    }
-                }
-            } // while
-
-            json.put("service","GCM");
-
-            return json;
-        }
-        catch( JSONException e)
-        {
-        }
-        return null;
-    }
-
-    private static void createBoolean(JSONObject json, String key, boolean value) {
-        try {
-            json.put(key, value);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void createJSON(JSONObject json, String key, String value) {
-        try {
-            if( value.trim().startsWith("[")) {
-                JSONArray array = new JSONArray(value);
-                json.put(key, array);
-            } else {
-                JSONObject object = new JSONObject(value);
-                json.put(key, object);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void createActionObject(JSONObject json, String value) {
-        try {
-            json.put("actionResponseIdentifier", value);
-        } catch (JSONException e) {
-        }
-    }
-
-    private static void createPayloadObject(JSONObject json, String value)
-    {
-        String strValue = value;
-        if (strValue.startsWith("{")) {
-            try {
-                JSONObject json2 = new JSONObject(strValue);
-                json.put("payload", json2);
-            }
-            catch (Exception e) {
-            }
-        }
-        else if (strValue.startsWith("["))
-        {
-            try
-            {
-                JSONArray json2 = new JSONArray(strValue);
-                json.put("payload", json2);
-            }
-            catch (Exception e) {
-            }
-        }
     }
 }
