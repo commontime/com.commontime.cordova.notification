@@ -1,6 +1,6 @@
 {
   "name": "com.commontime.cordova.notification",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "description": "Commontime cordova notification plugin.",
   "cordova": {
     "id": "com.commontime.cordova.notification",
