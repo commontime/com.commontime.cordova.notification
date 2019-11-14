@@ -1132,6 +1132,14 @@
     int badge = [[options objectForKey:@"badge"] intValue] ?: 0;
     
     [[UIApplication sharedApplication] setApplicationIconBadgeNumber:badge];
+
+    @try {
+        NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:[NSString stringWithFormat:@"group.%@", [[NSBundle mainBundle] bundleIdentifier]]];
+        [defaults setInteger:badge forKey:@"badgeNumber"];
+        [defaults synchronize];
+    }
+    @catch (NSException *exception) {}
+    @finally {}
     
     [self successWithMessage:[NSString stringWithFormat:@"app badge count set to %d", badge]];
 }
